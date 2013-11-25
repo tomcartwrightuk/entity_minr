@@ -4,8 +4,6 @@ import ner._
 import org.scalatra._
 import scalate.ScalateSupport
 import org.json4s.{DefaultFormats, Formats}
-
-// JSON handling support from Scalatra
 import org.scalatra.json._
 
 class EntityMinr extends EntityMinrStack with JacksonJsonSupport {
@@ -15,8 +13,11 @@ class EntityMinr extends EntityMinrStack with JacksonJsonSupport {
     contentType = formats("json")
   }
 
-  get("/entities"){
-    EntityWrangler.extract(params("contents"));
+  post("/entities"){
+    val toProcess = parse(request.body).extract[ToProcess].contents
+    EntityWrangler.extract(toProcess);
   }
   
 }
+
+case class ToProcess(contents: String)
